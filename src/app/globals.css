@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ *  PANTHÉON — direction artistique "atelier"
+ *
+ *  Matière plutôt que technologie : bois, papier, laiton patiné.
+ *  Tout est mat. Aucun dégradé violet, aucun halo lumineux : la
+ *  lumière vient de la scène 3D, pas du CSS.
+ * ------------------------------------------------------------------ */
+
+@theme {
+  /* Fonds — du plus profond au plus clair */
+  --color-ink: #16110d;        /* bois sombre, fond de page */
+  --color-ink-2: #1f1813;      /* tiroir entrouvert */
+  --color-surface: #2a211a;    /* carton, cartes */
+  --color-edge: #3b2f25;       /* tranche, filets */
+
+  /* Encres */
+  --color-text: #f2ebdd;       /* crème, texte principal */
+  --color-muted: #a3927d;      /* crayon gris-chaud */
+
+  /* Accents */
+  --color-gold: #c87137;       /* orange brûlé — accent principal */
+  --color-brass: #d9a441;      /* laiton, pour l'or des étoiles */
+  --color-forest: #2f4b3c;     /* vert sapin — secondaire profond */
+  --color-ink-blue: #1d3350;   /* bleu encre — second secondaire */
+
+  /* Les deux familles d'artistes gardent une teinte, mais mate */
+  --color-screen: #2f4b3c;     /* écran → vert sapin */
+  --color-music: #8c3b2e;      /* musique → terre cuite */
+
+  --font-display: "Inter Tight", "Helvetica Neue", "Arial Narrow", sans-serif;
+  --font-body: "Inter Tight", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  /* Lenis pilote le défilement : on désactive le smooth natif. */
+  scroll-behavior: auto;
+}
+
+html,
+body {
+  background: var(--color-ink);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+/* ---- Titres : grotesque très grasse, taille géante ---- */
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.86;
+  text-transform: uppercase;
+}
+
+/* ---- Petit bloc éditorial : capitales espacées, 11–13 px ---- */
+.eyebrow {
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.editorial {
+  font-size: 13px;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  color: var(--color-muted);
+  max-width: 34ch;
+}
+
+/* ---- Grain papier, posé sur toute l'application ---- */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.4s steps(5) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-2%, 1%); }
+  40% { transform: translate(1%, -2%); }
+  60% { transform: translate(-1%, -1%); }
+  80% { transform: translate(2%, 1%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ---- Apparitions ---- */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+
+.rise {
+  animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Révélation lettre par lettre : chaque .char porte son propre délai. */
+.char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.5em);
+  animation: char-in 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes char-in {
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- Cartes : objet posé, pas écran lumineux ---- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-edge);
+  box-shadow: 0 18px 38px -28px rgb(0 0 0 / 0.9);
+}
+
+/* Reflet mat qui traverse une carte au survol : discret, sans halo. */
+@keyframes sweep {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(220%); }
+}
+
+.sheen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 38%, rgb(242 235 221 / 0.1) 50%, transparent 62%);
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+
+.sheen:hover::before {
+  animation: sweep 1s ease-out;
+}
+
+/* ---- Portrait légèrement incliné au survol (perspective réelle) ---- */
+.tilt-scene {
+  perspective: 1100px;
+}
+
+.tilt {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+  transform-style: preserve-3d;
+}
+
+.tilt-scene:hover .tilt {
+  transform: rotateX(5deg) rotateY(-7deg) translateZ(18px);
+  box-shadow: 0 34px 54px -30px rgb(0 0 0 / 0.95);
+}
+
+.tilt-layer {
+  transform: translateZ(30px);
+}
+
+/* ---- Curseur personnalisé : on masque le natif sur le pointeur fin ---- */
+@media (hover: hover) and (pointer: fine) {
+  .custom-cursor-active,
+  .custom-cursor-active * {
+    cursor: none;
+  }
+}
+
+/* ---- Divers ---- */
+::selection {
+  background: var(--color-gold);
+  color: var(--color-ink);
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--color-ink); }
+::-webkit-scrollbar-thumb { background: var(--color-edge); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #4d3e31; }
+
+/* ---- Easter egg Beetlejuice : la page passe en noir et blanc ---- */
+.egg-monochrome {
+  filter: grayscale(1) contrast(1.15);
+  transition: filter 0.6s ease;
+}
+
+/* ---- Easter egg Shining : la page se fissure ---- */
+@keyframes crack-open {
+  0% { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .char { opacity: 1; transform: none; }
+}
