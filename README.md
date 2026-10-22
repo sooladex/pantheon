@@ -97,6 +97,7 @@ ta machine pour créer le schéma.
 
 ## Pistes suivantes
 
+
 - Listes thématiques (« Les méchants les plus charismatiques »)
 - Suivre d'autres utilisateurs, feed d'activité des abonnements
 - Étendre au-delà d'acteurs/chanteurs : réalisateurs, auteurs (Open Library)
