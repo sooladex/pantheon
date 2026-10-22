@@ -1,78 +1,75 @@
 // Page de diagnostic temporaire — a supprimer une fois Spotify repare.
-// N'affiche jamais de valeur secrete : seulement la presence des variables,
-// leur longueur, et le code d'erreur renvoye par Spotify.
+// N'affiche jamais de valeur secrete.
+import { searchMusicArtists, trendingMusicArtists } from "@/lib/spotify";
+
 export const dynamic = "force-dynamic";
 
-async function check() {
+async function raw() {
   const id = process.env.SPOTIFY_CLIENT_ID ?? "";
   const secret = process.env.SPOTIFY_CLIENT_SECRET ?? "";
-
-  const base: Record<string, unknown> = {
-    id_present: Boolean(id),
+  const out: Record<string, unknown> = {
     id_longueur: id.length,
-    id_propre: id === id.trim() && !/["']/.test(id),
-    secret_present: Boolean(secret),
     secret_longueur: secret.length,
-    secret_propre: secret === secret.trim() && !/["']/.test(secret),
   };
+  if (!id || !secret) return { ...out, etape: "variable vide" };
 
-  if (!id || !secret) return { ...base, etape: "variable vide, rien teste" };
+  const res = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: "Basic " + Buffer.from(`${id}:${secret}`).toString("base64"),
+    },
+    body: "grant_type=client_credentials",
+    cache: "no-store",
+  });
+  out.auth_http = res.status;
+  if (!res.ok) return out;
+  const { access_token } = (await res.json()) as { access_token: string };
 
-  let token = "";
+  // Exactement les memes options que la lib de l'app (cache 6h)
+  const url = new URL("https://api.spotify.com/v1/search");
+  url.searchParams.set("q", "daft punk");
+  url.searchParams.set("type", "artist");
+  url.searchParams.set("limit", "3");
   try {
-    const res = await fetch("https://accounts.spotify.com/api/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic " + Buffer.from(`${id}:${secret}`).toString("base64"),
-      },
-      body: "grant_type=client_credentials",
-      cache: "no-store",
+    const r2 = await fetch(url, {
+      headers: { Authorization: `Bearer ${access_token}` },
+      next: { revalidate: 60 * 60 * 6 },
     });
-    base.auth_http = res.status;
-    if (!res.ok) {
-      const j = (await res.json().catch(() => ({}))) as Record<string, string>;
-      base.auth_erreur = j.error ?? "";
-      base.auth_detail = j.error_description ?? "";
-      return base;
+    out.search_avec_cache_http = r2.status;
+    if (r2.ok) {
+      const j = (await r2.json()) as { artists?: { items?: { name: string }[] } };
+      out.search_avec_cache = (j.artists?.items ?? []).map((a) => a.name);
     }
-    const j = (await res.json()) as { access_token?: string };
-    token = j.access_token ?? "";
-    base.auth_ok = Boolean(token);
   } catch (e) {
-    base.auth_exception = String(e);
-    return base;
+    out.search_avec_cache_exception = String(e);
   }
+  return out;
+}
 
+async function viaLib() {
+  const out: Record<string, unknown> = {};
   try {
-    const url = new URL("https://api.spotify.com/v1/search");
-    url.searchParams.set("q", "daft punk");
-    url.searchParams.set("type", "artist");
-    url.searchParams.set("limit", "3");
-    const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${token}` },
-      cache: "no-store",
-    });
-    base.search_http = res.status;
-    if (!res.ok) {
-      const j = (await res.json().catch(() => ({}))) as { error?: { message?: string } };
-      base.search_erreur = j.error?.message ?? "";
-      return base;
-    }
-    const j = (await res.json()) as { artists?: { items?: { name: string }[] } };
-    base.search_resultats = (j.artists?.items ?? []).map((a) => a.name);
+    out.searchMusicArtists = (await searchMusicArtists("daft punk")).map((a) => a.name);
   } catch (e) {
-    base.search_exception = String(e);
+    out.searchMusicArtists_erreur = String(e);
   }
-
-  return base;
+  try {
+    out.trendingMusicArtists_nb = (await trendingMusicArtists()).length;
+  } catch (e) {
+    out.trendingMusicArtists_erreur = String(e);
+  }
+  return out;
 }
 
 export default async function DiagPage() {
-  const data = await check();
+  const [a, b] = await Promise.all([
+    raw().catch((e) => ({ raw_erreur: String(e) })),
+    viaLib(),
+  ]);
   return (
     <pre style={{ padding: 24, fontSize: 14, whiteSpace: "pre-wrap" }}>
-      {JSON.stringify(data, null, 2)}
+      {JSON.stringify({ brut: a, via_lib: b }, null, 2)}
     </pre>
   );
 }
