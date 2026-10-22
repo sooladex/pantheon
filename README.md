@@ -101,3 +101,4 @@ ta machine pour créer le schéma.
 - Suivre d'autres utilisateurs, feed d'activité des abonnements
 - Étendre au-delà d'acteurs/chanteurs : réalisateurs, auteurs (Open Library)
 - Diary : noter un artiste à une date, comme le journal Letterboxd
+
