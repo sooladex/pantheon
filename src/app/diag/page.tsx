@@ -1,6 +1,4 @@
-// Page de diagnostic temporaire — a supprimer une fois Spotify repare.
-import { searchMusicArtists, trendingMusicArtists } from "@/lib/spotify";
-
+// Page de diagnostic temporaire.
 export const dynamic = "force-dynamic";
 
 async function token() {
@@ -20,52 +18,54 @@ async function token() {
   return j.access_token;
 }
 
-/** Rejoue exactement les 4 appels de trendingMusicArtists, un par un. */
-async function seeds() {
+async function probe() {
   const t = await token();
-  const out: Record<string, unknown>[] = [];
-  for (const s of ["a", "e", "i", "o"]) {
+  const out: Record<string, string>[] = [];
+
+  for (const limit of ["1", "5", "10", "11", "15", "20", "50"]) {
     const url = new URL("https://api.spotify.com/v1/search");
-    url.searchParams.set("q", s);
+    url.searchParams.set("q", "a");
     url.searchParams.set("type", "artist");
-    url.searchParams.set("limit", "20");
-    try {
-      const r = await fetch(url, {
-        headers: { Authorization: `Bearer ${t}` },
-        next: { revalidate: 60 * 60 * 6 },
-      });
-      const row: Record<string, unknown> = { seed: s, http: r.status };
-      if (!r.ok) {
-        row.corps = (await r.text()).slice(0, 200);
-      } else {
-        const j = (await r.json()) as { artists?: { items?: { name: string }[] } };
-        row.nb = (j.artists?.items ?? []).length;
-        row.premier = j.artists?.items?.[0]?.name ?? null;
-      }
-      out.push(row);
-    } catch (e) {
-      out.push({ seed: s, exception: String(e) });
+    url.searchParams.set("limit", limit);
+    const r = await fetch(url, {
+      headers: { Authorization: `Bearer ${t}` },
+      cache: "no-store",
+    });
+    let note = "ok";
+    if (!r.ok) note = (await r.text()).slice(0, 120);
+    else {
+      const j = (await r.json()) as { artists?: { items?: unknown[] } };
+      note = "ok, recus=" + (j.artists?.items ?? []).length;
     }
+    out.push({ test: `search limit=${limit}`, http: String(r.status), note });
   }
+
+  for (const limit of ["10", "20", "30", "50"]) {
+    const url = new URL("https://api.spotify.com/v1/artists/4tZwfgrHOc3mvqYlEYSvVi/albums");
+    url.searchParams.set("include_groups", "album,single");
+    url.searchParams.set("limit", limit);
+    const r = await fetch(url, {
+      headers: { Authorization: `Bearer ${t}` },
+      cache: "no-store",
+    });
+    let note = "ok";
+    if (!r.ok) note = (await r.text()).slice(0, 120);
+    else {
+      const j = (await r.json()) as { items?: unknown[] };
+      note = "ok, recus=" + (j.items ?? []).length;
+    }
+    out.push({ test: `albums limit=${limit}`, http: String(r.status), note });
+  }
+
   return out;
 }
 
 export default async function DiagPage() {
-  const data: Record<string, unknown> = {};
+  let data: unknown;
   try {
-    data.seeds = await seeds();
+    data = await probe();
   } catch (e) {
-    data.seeds_erreur = String(e);
-  }
-  try {
-    data.trending_nb = (await trendingMusicArtists()).length;
-  } catch (e) {
-    data.trending_erreur = String(e);
-  }
-  try {
-    data.search_ok = (await searchMusicArtists("daft punk")).length;
-  } catch (e) {
-    data.search_erreur = String(e);
+    data = { erreur: String(e) };
   }
   return (
     <pre style={{ padding: 24, fontSize: 14, whiteSpace: "pre-wrap" }}>
