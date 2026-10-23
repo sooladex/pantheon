@@ -75,7 +75,8 @@ export async function searchMusicArtists(query: string): Promise<ArtistCard[]> {
   const data = await spotify<{ artists: { items: SpotifyArtist[] } }>("/search", {
     q: query,
     type: "artist",
-    limit: "12",
+    // Spotify plafonne "limit" a 10 pour les apps en client_credentials.
+    limit: "10",
   });
   return data.artists.items.map(toCard);
 }
@@ -87,13 +88,13 @@ export async function searchMusicArtists(query: string): Promise<ArtistCard[]> {
 export async function trendingMusicArtists(): Promise<ArtistCard[]> {
   if (!spotifyConfigured()) return [];
   try {
-    const seeds = ["a", "e", "i", "o"];
+    const seeds = ["a", "e", "i", "o", "u", "s"];
     const seen = new Map<string, ArtistCard>();
     for (const s of seeds) {
       const data = await spotify<{ artists: { items: SpotifyArtist[] } }>("/search", {
         q: s,
         type: "artist",
-        limit: "20",
+        limit: "10",
       });
       for (const a of data.artists.items) {
         if (!seen.has(a.id)) seen.set(a.id, toCard(a));
@@ -109,13 +110,24 @@ export async function getMusicArtist(id: string): Promise<ArtistDetail | null> {
   if (!spotifyConfigured()) return null;
 
   const artist = await spotify<SpotifyArtist>(`/artists/${id}`);
-  const albums = await spotify<{
+  // Spotify plafonne "limit" a 10 : on pagine pour garder une discographie fournie.
+  type AlbumPage = {
     items: { id: string; name: string; album_type: string; release_date: string; images?: { url: string }[] }[];
-  }>(`/artists/${id}/albums`, { include_groups: "album,single", limit: "30" });
+  };
+  const pages = await Promise.all(
+    ["0", "10", "20"].map((offset) =>
+      spotify<AlbumPage>(`/artists/${id}/albums`, {
+        include_groups: "album,single",
+        limit: "10",
+        offset,
+      }).catch(() => ({ items: [] }) as AlbumPage),
+    ),
+  );
+  const albumItems = pages.flatMap((p) => p.items);
 
   const seen = new Set<string>();
   const credits: CreditItem[] = [];
-  for (const al of albums.items) {
+  for (const al of albumItems) {
     const key = al.name.toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
