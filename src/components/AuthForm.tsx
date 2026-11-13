@@ -108,7 +108,7 @@ function Field({
       <input
         name={name}
         {...rest}
-        className="w-full rounded-xl border border-edge bg-surface/60 px-4 py-2.5 text-sm outline-none transition focus:border-gold/60"
+        className="w-full glass rounded-[1.5rem] px-4 py-2.5 text-sm outline-none transition focus:border-gold/60"
       />
       {hint && <span className="mt-1 block text-[11px] text-muted/70">{hint}</span>}
     </label>

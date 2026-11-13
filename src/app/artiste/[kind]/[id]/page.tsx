@@ -333,7 +333,7 @@ export default async function ArtistPage({
           <ListPicker artist={card} myLists={myLists} signedIn={Boolean(user)} />
 
           {stats.count > 0 && (
-            <div className="rounded-2xl border border-edge bg-surface/50 p-5">
+            <div className="glass rounded-[1.5rem] p-5">
               <p className="text-[11px] uppercase tracking-[0.25em] text-muted">Répartition</p>
               <div className="mt-4 flex h-24 items-end gap-1">
                 {stats.histogram.map((n, i) => (

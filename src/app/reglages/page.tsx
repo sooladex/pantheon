@@ -33,7 +33,7 @@ export default async function SettingsPage() {
   if (!profile) redirect("/connexion");
 
   return (
-    <div className="mx-auto max-w-md px-4 py-16">
+    <div className="mx-auto max-w-md px-4 md:pl-24 py-16">
       <p className="text-[11px] uppercase tracking-[0.3em] text-gold/80">Réglages</p>
       <h1 className="mt-2 text-3xl font-black">Mon profil</h1>
       <p className="mt-2 text-sm text-muted">

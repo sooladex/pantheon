@@ -5,7 +5,7 @@ export default function ListTile({ list }: { list: ListSummary }) {
   return (
     <Link
       href={`/u/${list.username}/listes/${list.slug}`}
-      className="group block rounded-xl border border-edge bg-surface/40 p-4 transition hover:border-gold/50"
+      className="group block glass rounded-[1.5rem] p-4 transition hover:border-gold/50"
     >
       <div className="flex gap-1.5">
         {Array.from({ length: 4 }, (_, i) => {

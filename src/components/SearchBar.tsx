@@ -65,7 +65,7 @@ export default function SearchBar() {
           if (e.key === "Escape") setOpen(false);
         }}
         placeholder="Un acteur, un chanteur…"
-        className="w-full rounded-full border border-edge bg-surface/70 px-4 py-1.5 text-sm outline-none transition placeholder:text-muted/70 focus:border-gold/60"
+        className="w-full rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm outline-none transition placeholder:text-muted/70 focus:border-gold/60"
       />
 
       {loading && (
@@ -73,7 +73,7 @@ export default function SearchBar() {
       )}
 
       {open && results.length > 0 && (
-        <ul className="absolute right-0 top-full z-50 mt-2 max-h-96 w-80 overflow-auto rounded-xl border border-edge bg-ink-2/95 p-1 shadow-2xl backdrop-blur-xl">
+        <ul className="absolute right-0 top-full z-50 mt-2 max-h-96 w-80 overflow-auto glass-strong rounded-2xl p-1 shadow-2xl backdrop-blur-xl">
           {results.map((r) => (
             <li key={`${r.kind}:${r.externalId}`}>
               <button

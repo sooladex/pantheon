@@ -145,56 +145,107 @@ export default async function ProfilePage({
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12">
+    <div className="mx-auto max-w-7xl px-4 md:pl-24 py-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 
-      <header className="flex flex-wrap items-end gap-6 border-b border-edge/60 pb-8">
-        <div className="flex min-w-0 items-center gap-4">
-          {profile.avatarUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={profile.avatarUrl}
-              alt=""
-              className="h-20 w-20 shrink-0 rounded-full border border-edge object-cover"
-            />
-          ) : (
-            <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border border-edge bg-surface text-xl font-black uppercase text-muted">
-              {profile.displayName.slice(0, 2)}
-            </span>
-          )}
-          <div className="min-w-0">
-            <p className="text-[11px] uppercase tracking-[0.3em] text-gold/80">Panthéon de</p>
-            <h1 className="mt-1 truncate text-4xl font-black">{profile.displayName}</h1>
-            <p className="text-sm text-muted">@{profile.username}</p>
-          </div>
-        </div>
+      {(() => {
+        const cover = (pantheon[0] ?? all[0])?.imageUrl ?? null;
+        return (
+          <header className="glass relative overflow-hidden rounded-[2rem]">
+            {cover && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={cover}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 h-full w-full scale-110 object-cover object-top opacity-35 blur-2xl"
+              />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-br from-ink/60 via-ink/80 to-ink" />
+            <div className="relative grid gap-8 p-6 md:grid-cols-[minmax(0,1fr)_auto] md:p-10">
+              <div className="min-w-0">
+                <div className="flex items-center gap-4">
+                  {profile.avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={profile.avatarUrl}
+                      alt=""
+                      className="h-16 w-16 shrink-0 rounded-2xl border border-white/15 object-cover"
+                    />
+                  ) : (
+                    <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-gold text-xl font-black uppercase text-ink">
+                      {profile.displayName.slice(0, 2)}
+                    </span>
+                  )}
+                  <p className="text-sm text-muted">@{profile.username}</p>
+                </div>
+                <h1 className="mt-5 break-words text-5xl font-black leading-[0.95] tracking-tight md:text-7xl">
+                  {profile.displayName}
+                </h1>
+                {profile.bio && (
+                  <p className="mt-4 max-w-xl text-base leading-relaxed text-text/80">{profile.bio}</p>
+                )}
+                <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-4">
+                  <Stat label="Notés" value={String(rated.length)} />
+                  <Stat label="Abonnés" value={String(counts.followers)} />
+                  <Stat label="Abonnements" value={String(counts.following)} />
+                  <Stat label="Moyenne" value={average > 0 ? (average / 2).toFixed(1) : "—"} />
+                </dl>
+                {pantheon.length > 0 && (
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {pantheon.slice(0, 5).map((a) => (
+                      <span
+                        key={a.externalId}
+                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-muted"
+                      >
+                        {a.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <div className="mt-6 flex flex-wrap items-center gap-3">
+                  <FollowUserButton
+                    username={profile.username}
+                    initialFollowing={counts.followedByViewer}
+                    signedIn={Boolean(viewer)}
+                    isSelf={isSelf}
+                  />
+                  <ShareButton title={`Le panthéon de ${profile.displayName}`} />
+                  {average > 0 && (
+                    <span className="flex items-center gap-2 text-xs text-muted">
+                      Note moyenne donnée : <Stars score={Math.round(average)} size={13} />
+                    </span>
+                  )}
+                </div>
+              </div>
 
-        <dl className="ml-auto flex gap-6 text-center sm:gap-8">
-          <Stat label="Notés" value={String(rated.length)} />
-          <Stat label="Abonnés" value={String(counts.followers)} />
-          <Stat label="Abonnements" value={String(counts.following)} />
-          <Stat label="Moyenne" value={average > 0 ? (average / 2).toFixed(1) : "—"} />
-        </dl>
-
-        <div className="flex w-full flex-wrap items-center gap-3">
-          <FollowUserButton
-            username={profile.username}
-            initialFollowing={counts.followedByViewer}
-            signedIn={Boolean(viewer)}
-            isSelf={isSelf}
-          />
-          <ShareButton title={`Le panthéon de ${profile.displayName}`} />
-          {average > 0 && (
-            <span className="flex items-center gap-2 text-xs text-muted">
-              Note moyenne donnée : <Stars score={Math.round(average)} size={13} />
-            </span>
-          )}
-        </div>
-
-        {profile.bio && (
-          <p className="w-full max-w-2xl text-sm leading-relaxed text-muted">{profile.bio}</p>
-        )}
-      </header>
+              {pantheon.length > 0 && (
+                <div className="hidden items-center md:flex">
+                  <div className="relative h-64 w-56">
+                    {pantheon.slice(0, 3).map((a, n) =>
+                      a.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          key={a.externalId}
+                          src={a.imageUrl}
+                          alt={a.name}
+                          className="absolute h-56 w-40 rounded-[1.5rem] border border-white/15 object-cover object-top shadow-2xl"
+                          style={{
+                            left: n * 26,
+                            top: n * 10,
+                            transform: `rotate(${(n - 1) * 6}deg)`,
+                            zIndex: 3 - n,
+                          }}
+                        />
+                      ) : null,
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </header>
+        );
+      })()}
 
       {pantheon.length > 0 && (
         <section className="mt-12">
@@ -256,8 +307,8 @@ export default async function ProfilePage({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dd className="text-2xl font-black">{value}</dd>
-      <dt className="text-[10px] uppercase tracking-[0.2em] text-muted">{label}</dt>
+      <dd className="text-3xl font-bold tracking-tight">{value}</dd>
+      <dt className="text-xs text-muted">{label}</dt>
     </div>
   );
 }

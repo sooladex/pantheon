@@ -50,7 +50,7 @@ export default async function LeaderboardPage({
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12">
+    <div className="mx-auto max-w-4xl px-4 md:pl-24 py-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 
       <p className="text-[11px] uppercase tracking-[0.3em] text-gold/80">Classement</p>
@@ -110,7 +110,7 @@ function RankRow({
     <li>
       <Link
         href={`/artiste/${card.kind}/${card.externalId}`}
-        className="flex items-center gap-4 rounded-xl border border-edge bg-surface/40 p-3 transition hover:border-gold/50"
+        className="flex items-center gap-4 glass rounded-[1.5rem] p-3 transition hover:border-gold/50"
       >
         <span
           className={`w-8 shrink-0 text-center text-lg font-black ${

@@ -17,7 +17,7 @@ export default async function ListsPage() {
   const all = await fetchLists({ publicOnly: true, limit: 60 }).catch(() => []);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12">
+    <div className="mx-auto max-w-5xl px-4 md:pl-24 py-12">
       <p className="text-[11px] uppercase tracking-[0.3em] text-gold/80">Communauté</p>
       <h1 className="mt-2 text-4xl font-black">Listes</h1>
       <p className="mt-2 max-w-xl text-sm text-muted">

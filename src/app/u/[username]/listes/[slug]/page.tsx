@@ -57,7 +57,7 @@ export default async function ListPage({
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12">
+    <div className="mx-auto max-w-7xl px-4 md:pl-24 py-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 
       <header className="border-b border-edge/60 pb-8">

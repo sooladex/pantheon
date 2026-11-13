@@ -23,7 +23,7 @@ export default function ArtistCardTile({
       href={`/artiste/${artist.kind}/${artist.externalId}`}
       className="tilt-scene group block"
     >
-      <div className="tilt sheen relative aspect-[2/3] overflow-hidden rounded-xl border border-edge bg-surface">
+      <div className="tilt sheen relative aspect-[2/3] overflow-hidden rounded-[1.25rem] border border-white/10 bg-surface">
         {artist.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img

@@ -104,7 +104,7 @@ export default function ListPicker({
               onChange={(e) => setTitle(e.target.value)}
               maxLength={80}
               placeholder="Nouvelle liste…"
-              className="min-w-0 flex-1 rounded-lg border border-edge bg-surface/60 px-2 py-1.5 text-xs outline-none focus:border-gold/60"
+              className="min-w-0 flex-1 glass rounded-2xl px-2 py-1.5 text-xs outline-none focus:border-gold/60"
             />
             <button
               disabled={creating}

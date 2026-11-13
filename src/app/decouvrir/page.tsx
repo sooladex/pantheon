@@ -19,7 +19,7 @@ export default async function DiscoverPage() {
   const music = artists.filter((a) => a.kind === "music");
 
   return (
-    <div className="mx-auto max-w-7xl space-y-14 px-4 py-12">
+    <div className="mx-auto max-w-7xl space-y-14 px-4 md:pl-24 py-12">
       <header>
         <p className="text-[11px] uppercase tracking-[0.3em] text-gold/80">Découvrir</p>
         <h1 className="mt-2 text-4xl font-black">Des visages à juger</h1>

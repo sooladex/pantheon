@@ -68,7 +68,7 @@ export default function ReviewCard({
   const artistHref = `/artiste/${review.artist.kind}/${review.artist.externalId}`;
 
   return (
-    <article className="flex gap-4 rounded-xl border border-edge bg-surface/40 p-4 transition hover:border-edge">
+    <article className="flex gap-4 glass rounded-[1.5rem] p-4 transition hover:border-edge">
       {showArtist && (
         <Link href={artistHref} className="shrink-0">
           {review.artist.imageUrl ? (

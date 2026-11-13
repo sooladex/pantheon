@@ -43,7 +43,7 @@ export default async function ReviewsPage({
   const base = onlyFollowing ? "/critiques?suivis=1&" : "/critiques?";
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 md:pl-24 py-12">
       <p className="text-[11px] uppercase tracking-[0.3em] text-gold/80">Communauté</p>
       <h1 className="mt-2 text-4xl font-black">Critiques</h1>
 

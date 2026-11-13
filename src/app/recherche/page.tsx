@@ -32,7 +32,7 @@ export default async function SearchPage({
   const results = term.length >= 2 ? await searchArtists(term).catch(() => []) : [];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12">
+    <div className="mx-auto max-w-7xl px-4 md:pl-24 py-12">
       <p className="text-[11px] uppercase tracking-[0.3em] text-muted">Recherche</p>
       <h1 className="mt-2 text-3xl font-black">{term || "…"}</h1>
       <p className="mt-1 text-sm text-muted">

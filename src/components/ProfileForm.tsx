@@ -65,7 +65,7 @@ export default function ProfileForm({
           onChange={(e) => set("displayName", e.target.value)}
           maxLength={60}
           required
-          className="w-full rounded-xl border border-edge bg-surface/60 px-4 py-2.5 text-sm outline-none transition focus:border-gold/60"
+          className="w-full glass rounded-[1.5rem] px-4 py-2.5 text-sm outline-none transition focus:border-gold/60"
         />
       </label>
 
@@ -77,7 +77,7 @@ export default function ProfileForm({
           rows={4}
           maxLength={400}
           placeholder="Ce que tu regardes, ce que tu écoutes, ce que tu défends."
-          className="w-full resize-y rounded-xl border border-edge bg-surface/60 px-4 py-2.5 text-sm outline-none transition placeholder:text-muted/60 focus:border-gold/60"
+          className="w-full resize-y glass rounded-[1.5rem] px-4 py-2.5 text-sm outline-none transition placeholder:text-muted/60 focus:border-gold/60"
         />
         <span className="mt-1 block text-right text-[11px] text-muted/70">
           {form.bio.length} / 400
@@ -94,7 +94,7 @@ export default function ProfileForm({
           type="url"
           maxLength={500}
           placeholder="https://…"
-          className="w-full rounded-xl border border-edge bg-surface/60 px-4 py-2.5 text-sm outline-none transition placeholder:text-muted/60 focus:border-gold/60"
+          className="w-full glass rounded-[1.5rem] px-4 py-2.5 text-sm outline-none transition placeholder:text-muted/60 focus:border-gold/60"
         />
         <span className="mt-1 block text-[11px] text-muted/70">
           Colle le lien d&apos;une image déjà en ligne. L&apos;envoi de fichier arrivera plus tard.

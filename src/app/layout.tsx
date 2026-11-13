@@ -50,7 +50,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#08080b",
+  themeColor: "#09090c",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -103,12 +103,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
 
         <Nav />
-        <main id="contenu" className="flex-1">
+        <main id="contenu" className="flex-1 pb-24 md:pb-0">
           {children}
         </main>
 
-        <footer className="mt-24 border-t border-edge/60">
-          <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 text-sm sm:grid-cols-3">
+        <footer className="mt-24 px-4 pb-28 md:pb-8 md:pl-24">
+          <div className="glass mx-auto grid max-w-7xl gap-8 rounded-[2rem] px-6 py-10 text-sm sm:grid-cols-3">
             <div>
               <p className="text-base font-black tracking-[0.18em]">PANTHÉON</p>
               <p className="mt-2 text-xs leading-relaxed text-muted">
