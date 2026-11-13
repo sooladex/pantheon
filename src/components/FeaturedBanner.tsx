@@ -39,7 +39,7 @@ export default function FeaturedBanner({ artists }: { artists: ArtistCard[] }) {
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(9_9_12/0.92)_0%,rgb(9_9_12/0.6)_50%,rgb(9_9_12/0.25)_100%)]" />
 
         {/* Portrait net, posé à droite comme une affiche */}
-        <div className="absolute bottom-0 right-[8%] top-8 hidden w-[34%] max-w-[330px] md:block">
+        <div className="absolute bottom-0 right-[12%] top-8 hidden w-[34%] max-w-[330px] md:block">
           {picks.map((p, n) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -84,7 +84,7 @@ export default function FeaturedBanner({ artists }: { artists: ArtistCard[] }) {
           </div>
         </div>
 
-        <div className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 gap-2 lg:left-auto lg:right-[calc(8%+340px)] lg:translate-x-0 xl:flex">
+        <div className="absolute right-5 top-1/2 hidden -translate-y-1/2 flex-col gap-2 lg:flex">
           {picks.map((p, n) => (
             <button
               key={p.externalId}
