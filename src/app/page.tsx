@@ -36,8 +36,8 @@ export default async function Home() {
         {/* Colonne latérale : dernières critiques, façon « nouvelles bandes-annonces » */}
         <aside className="order-2 space-y-4 lg:order-1">
           <div className="glass rounded-[1.75rem] p-5 lg:sticky lg:top-24">
-            <p className="text-lg font-bold">Dernières critiques 🔥</p>
-            <p className="text-xs text-muted">Publiées par la communauté</p>
+            <p className="text-lg font-bold">{activity.length ? "Dernières critiques 🔥" : "À noter en premier 🔥"}</p>
+            <p className="text-xs text-muted">{activity.length ? "Publiées par la communauté" : "Sois le premier à les critiquer"}</p>
             <div className="mt-4 space-y-3">
               {activity.slice(0, 5).map((r) => (
                 <Link
@@ -68,9 +68,31 @@ export default async function Home() {
                   </div>
                 </Link>
               ))}
-              {activity.length === 0 && (
-                <p className="text-xs text-muted">Aucune critique pour l&apos;instant.</p>
-              )}
+              {activity.length === 0 &&
+                wall.slice(5, 10).map((a) => (
+                  <Link
+                    key={a.externalId}
+                    href={`/artiste/${a.kind}/${a.externalId}`}
+                    className="group relative block h-28 overflow-hidden rounded-2xl"
+                  >
+                    {a.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={a.imageUrl}
+                        alt=""
+                        loading="lazy"
+                        className="h-full w-full object-cover object-[center_25%] transition duration-700 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-surface" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/30 to-transparent" />
+                    <div className="absolute inset-x-3 bottom-2.5 flex items-end justify-between gap-2">
+                      <p className="truncate text-sm font-semibold">{a.name}</p>
+                      <span className="glass shrink-0 rounded-full px-2.5 py-0.5 text-[11px]">Noter</span>
+                    </div>
+                  </Link>
+                ))}
             </div>
             <Link
               href="/critiques"

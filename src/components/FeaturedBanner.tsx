@@ -27,20 +27,32 @@ export default function FeaturedBanner({ artists }: { artists: ArtistCard[] }) {
   return (
     <section className="glass relative overflow-hidden rounded-[2rem]">
       <div className="relative h-[420px] md:h-[460px]">
-        {picks.map((p, n) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={p.externalId}
-            src={p.imageUrl!}
-            alt=""
-            aria-hidden={n !== i}
-            className={`absolute inset-0 h-full w-full object-cover object-[center_20%] transition-all duration-[1200ms] ${
-              n === i ? "scale-100 opacity-100" : "scale-105 opacity-0"
-            }`}
-          />
-        ))}
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(9_9_12/0.92)_0%,rgb(9_9_12/0.55)_45%,transparent_75%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/90 to-transparent" />
+        {/* Fond : le portrait flouté remplit le cadre */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          key={`bg-${a.externalId}`}
+          src={a.imageUrl!}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 h-full w-full scale-125 object-cover opacity-60 blur-3xl transition-opacity duration-1000"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(9_9_12/0.92)_0%,rgb(9_9_12/0.6)_50%,rgb(9_9_12/0.25)_100%)]" />
+
+        {/* Portrait net, posé à droite comme une affiche */}
+        <div className="absolute bottom-0 right-[8%] top-8 hidden w-[34%] max-w-[330px] md:block">
+          {picks.map((p, n) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={p.externalId}
+              src={p.imageUrl!}
+              alt={n === i ? p.name : ""}
+              className={`absolute inset-0 h-full w-full rounded-t-[1.75rem] object-cover object-top shadow-[0_30px_80px_-20px_rgb(0_0_0/0.9)] transition-all duration-700 ${
+                n === i ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+              }`}
+            />
+          ))}
+        </div>
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink/80 to-transparent" />
 
         <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10">
           <span className="glass mb-4 inline-flex w-fit items-center gap-2 rounded-full px-3 py-1 text-[11px] text-text">
@@ -72,7 +84,7 @@ export default function FeaturedBanner({ artists }: { artists: ArtistCard[] }) {
           </div>
         </div>
 
-        <div className="absolute bottom-6 right-6 hidden gap-2 md:flex">
+        <div className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 gap-2 lg:left-auto lg:right-[calc(8%+340px)] lg:translate-x-0 xl:flex">
           {picks.map((p, n) => (
             <button
               key={p.externalId}
